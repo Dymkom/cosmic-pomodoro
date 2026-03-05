@@ -52,11 +52,11 @@ impl Pomodoro {
         if let Some(current_timer) = self.timers.get_mut(self.timer_pointer) {
             let (remaining, status, timer_type) = current_timer.get_current_status();
 
-            if (self.auto_start_work && matches!(timer_type, TimerType::Work))
-                || (self.auto_start_break && matches!(timer_type, TimerType::Break))
-            {
-                current_timer.start();
-            }
+            // if (self.auto_start_work && matches!(timer_type, TimerType::Work))
+            //     || (self.auto_start_break && matches!(timer_type, TimerType::Break))
+            // {
+            //     current_timer.start();
+            // }
 
             return Some((remaining, status, timer_type, self.started));
         }
@@ -109,6 +109,19 @@ impl Pomodoro {
             self.timer_pointer = 0;
             self.cycle_count += 1;
         }
+
+        if let Some(current_timer) = self.timers.get_mut(self.timer_pointer) {
+            let (_, _, timer_type) = current_timer.get_current_status();
+
+            if (self.auto_start_work && matches!(timer_type, TimerType::Work))
+                || (self.auto_start_break && matches!(timer_type, TimerType::Break))
+            {
+                current_timer.start();
+            }
+
+        }
+
+      
     }
 
     // Shouldn't be used, gui should make new one when needed

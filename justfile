@@ -47,6 +47,9 @@ check-json: (check '--message-format=json')
 run *args:
     env RUST_BACKTRACE=full cargo run --release {{args}}
 
+run-software *args:
+    env RUST_BACKTRACE=full WGPU_BACKEND=gl LIBGL_ALWAYS_SOFTWARE=1 cargo run --release {{args}}
+
 # Installs files
 install:
     install -Dm0755 {{ cargo-target-dir / 'release' / name }} {{bin-dst}}
