@@ -1,0 +1,33 @@
+[package]
+name = "cosmic-pomodoro"
+version = "0.1.0"
+edition = "2024"
+license = "MPL-2.0"
+description = "Simple Pomodoro applet for Cosmic Desktop"
+repository = "https://github.com/pop-os/cosmic-app-template"
+
+[dependencies]
+futures-util = "0.3.31"
+i18n-embed-fl = "0.10"
+rust-embed = "8.7.2"
+tokio = { version = "1.48.0", features = ["full"] }
+
+[dependencies.i18n-embed]
+version = "0.16"
+features = ["fluent-system", "desktop-requester"]
+
+# Važno: minimalna konfiguracija + pin na isti commit kao u Minimon-u
+[dependencies.libcosmic]
+git = "https://github.com/pop-os/libcosmic.git"
+rev = "beddbf17703728182395a13267954d839226331d"
+default-features = false
+features = [
+    "applet",
+    "applet-token",
+]
+
+# (Opcionalno) Release podešavanja kao kod Minimon-a, za manji otisak i brži rad
+#[profile.release]
+#lto = "thin"
+#opt-level = 3
+#debug = false
