@@ -56,18 +56,18 @@ impl Timer {
             TimerState::Created => {
                 self.start_time = Instant::now();
                 self.state = TimerState::Running;
-                println!("Timer started from Created state");
+                // println!("Timer started from Created state");
             }
             TimerState::Paused => {
                 self.start_time = Instant::now();
                 self.state = TimerState::Running;
-                println!("Timer resumed from Paused state");
+                // println!("Timer resumed from Paused state");
             }
             _ => {
-                println!(
-                    "start() called, but Timer is in {:?} state – ignored",
-                    self.state
-                );
+                // println!(
+                //     "start() called, but Timer is in {:?} state – ignored",
+                //     self.state
+                // );
             }
         }
     }
@@ -86,13 +86,13 @@ impl Timer {
                 }
 
                 self.state = TimerState::Paused;
-                println!("Timer paused");
+                // println!("Timer paused");
             }
             _ => {
-                println!(
-                    "pause() called, but Timer is in {:?} state – ignored",
-                    self.state
-                );
+                // println!(
+                //     "pause() called, but Timer is in {:?} state – ignored",
+                //     self.state
+                // );
             }
         }
     }
@@ -103,13 +103,13 @@ impl Timer {
             TimerState::Running | TimerState::Paused | TimerState::Finished => {
                 self.time_left = self.duration;
                 self.state = TimerState::Created;
-                println!("Timer reset");
+                // println!("Timer reset");
             }
             _ => {
-                println!(
-                    "reset() called, but Timer is in {:?} state – ignored",
-                    self.state
-                );
+                // println!(
+                //     "reset() called, but Timer is in {:?} state – ignored",
+                //     self.state
+                // );
             }
         }
     }
@@ -119,13 +119,13 @@ impl Timer {
             TimerState::Running | TimerState::Paused => {
                 self.time_left = Duration::from_secs(0);
                 self.state = TimerState::Finished;
-                println!("Timer finished");
+                // println!("Timer finished");
             }
             TimerState::Finished => {
-                println!("finish() called, but Timer is already Finished – ignored");
+                // println!("finish() called, but Timer is already Finished – ignored");
             }
             TimerState::Created => {
-                println!("finish() called, but Timer was never started – ignored");
+                // println!("finish() called, but Timer was never started – ignored");
             }
         }
     }

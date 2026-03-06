@@ -37,13 +37,22 @@ impl Pomodoro {
         };
     }
 
-    pub fn update_and_return_state(&mut self) -> Option<(u64, TimerState, TimerType, bool)> {
+    pub fn update_and_return_state(&mut self) -> Option<(u64, TimerState, TimerType, bool, usize, u32)> {
         if let Some(current_timer) = self.timers.get_mut(self.timer_pointer) {
             current_timer.time_update();
             let (remaining, status, timer_type) = current_timer.get_current_status();
+            let session_count = self.timer_pointer / 2;
+            let cycle_count = self.cycle_count;
 
             if !matches!(status, TimerState::Finished) {
-                return Some((remaining, status, timer_type, self.started));
+                return Some((
+                    remaining,
+                    status,
+                    timer_type,
+                    self.started,
+                    session_count,
+                    cycle_count,
+                ));
             }
         }
 
@@ -51,6 +60,8 @@ impl Pomodoro {
 
         if let Some(current_timer) = self.timers.get_mut(self.timer_pointer) {
             let (remaining, status, timer_type) = current_timer.get_current_status();
+            let session_count = self.timer_pointer / 2;
+            let cycle_count = self.cycle_count;
 
             // if (self.auto_start_work && matches!(timer_type, TimerType::Work))
             //     || (self.auto_start_break && matches!(timer_type, TimerType::Break))
@@ -58,7 +69,14 @@ impl Pomodoro {
             //     current_timer.start();
             // }
 
-            return Some((remaining, status, timer_type, self.started));
+            return Some((
+                remaining,
+                status,
+                timer_type,
+                self.started,
+                session_count,
+                cycle_count,
+            ));
         }
 
         return None;

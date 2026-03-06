@@ -24,6 +24,8 @@ const APPLET_ICON_PATH: &str = "resources/icon-symbolic.svg";
 const APP_ICON_NAME: &str = "com.github.petar030.cosmic-pomodoro";
 const APP_ICON_SYMBOLIC_NAME: &str = "com.github.petar030.cosmic-pomodoro-symbolic";
 
+mod views;
+
 /// Dva pogleda (Main i Settings), kao u starom template-u.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum PopupView {
@@ -44,15 +46,19 @@ struct PomodoroTickState {
     timer_state: TimerState,
     timer_type: TimerType,
     started: bool,
+    session_count: usize,
+    cycle_count: u32,
 }
 
 impl PomodoroTickState {
-    fn from_tuple(value: (u64, TimerState, TimerType, bool)) -> Self {
+    fn from_tuple(value: (u64, TimerState, TimerType, bool, usize, u32)) -> Self {
         Self {
             remaining: value.0,
             timer_state: value.1,
             timer_type: value.2,
             started: value.3,
+            session_count: value.4,
+            cycle_count: value.5,
         }
     }
 }
@@ -64,6 +70,8 @@ impl Default for PomodoroTickState {
             timer_state: TimerState::Created,
             timer_type: TimerType::Work,
             started: false,
+            session_count: 0,
+            cycle_count: 0,
         }
     }
 }
@@ -319,14 +327,16 @@ impl cosmic::Application for AppModel {
 
     fn view_window(&self, id: Id) -> Element<'_, Self::Message> {
         match self.current_view {
-            PopupView::Main => view_main(
+            PopupView::Main => views::main::view_main(
                 &self.core,
                 self.current_view,
                 id,
                 &self.config,
                 &self.pomodoro_state,
             ),
-            PopupView::Settings => view_settings(&self.core, self.current_view, id, &self.config),
+            PopupView::Settings => {
+                views::settings::view_settings(&self.core, self.current_view, id, &self.config)
+            }
         }
     }
 
@@ -495,244 +505,4 @@ impl AppModel {
         let elapsed = total_seconds.saturating_sub(state.remaining);
         (elapsed as f32 / total_seconds as f32).clamp(0.0, 1.0)
     }
-}
-
-fn view_main<'a>(
-    core: &'a cosmic::Core,
-    _current_view: PopupView,
-    _id: Id,
-    _config: &'a Config,
-    pomodoro_state: &'a PomodoroState,
-) -> Element<'a, Message> {
-    let (remaining, timer_state, timer_type, started) = pomodoro_state
-        .last_tick_state
-        .as_ref()
-        .map(|s| (s.remaining, s.timer_state, s.timer_type, s.started))
-        .unwrap_or((0, TimerState::Created, TimerType::Work, false));
-
-    let (work_class, break_class) = match timer_type {
-        TimerType::Work => (
-            cosmic::theme::Container::Primary,
-            cosmic::theme::Container::Transparent,
-        ),
-        TimerType::Break => (
-            cosmic::theme::Container::Transparent,
-            cosmic::theme::Container::Primary,
-        ),
-    };
-
-    let work_segment = widget::container(
-        widget::row()
-            .width(Length::Fill)
-            .align_y(Alignment::Center)
-            .push(widget::horizontal_space())
-            .push(widget::icon::from_name("alarm-symbolic").size(16).icon())
-            .push(widget::horizontal_space()),
-    )
-    .width(Length::FillPortion(1))
-    .padding(6)
-    .class(work_class);
-
-    let mut break_icon_handle = widget::icon::from_svg_bytes(
-        include_bytes!("../resources/icons/coffee-symbolic.svg").as_slice(),
-    );
-    break_icon_handle.symbolic = true;
-
-    let break_segment = widget::container(
-        widget::row()
-            .width(Length::Fill)
-            .align_y(Alignment::Center)
-            .push(widget::horizontal_space())
-            .push(break_icon_handle.icon().size(16))
-            .push(widget::horizontal_space()),
-    )
-    .width(Length::FillPortion(1))
-    .padding(6)
-    .class(break_class);
-
-    let phase_row = widget::container(
-        widget::row()
-            .width(Length::Fill)
-            .spacing(4)
-            .push(work_segment)
-            .push(break_segment),
-    )
-    .width(Length::Fill)
-    .padding(2)
-    .class(cosmic::theme::Container::Transparent);
-
-    let timer_text = widget::text(format_timer(remaining)).size(56);
-
-    let (center_icon, center_action) = match timer_state {
-        TimerState::Running => ("media-playback-pause-symbolic", Message::PausePomodoro),
-        _ => ("media-playback-start-symbolic", Message::StartPomodoro),
-    };
-
-    let center_button = widget::button::custom(
-        widget::container(widget::icon::from_name(center_icon).size(20).icon())
-            .width(Length::Fill)
-            .center_x(Length::Fill),
-    )
-    .class(widget::button::ButtonClass::Suggested)
-    .on_press(center_action)
-    .width(Length::Fixed(156.0));
-
-    let controls = widget::row()
-        .width(Length::Fill)
-        .padding(0)
-        .spacing(8)
-        .align_y(Alignment::Center)
-        .push(
-            core.applet
-                .icon_button("view-refresh-symbolic")
-                .on_press(Message::RestartPomodoro),
-        )
-        .push(widget::horizontal_space())
-        .push(center_button)
-        .push(widget::horizontal_space())
-        .push(
-            core.applet
-                .icon_button("media-skip-forward-symbolic")
-                .on_press(Message::ForwardPomodoro),
-        );
-
-    let settings_row = if started {
-        widget::row().width(Length::Fill)
-    } else {
-        widget::row()
-            .width(Length::Fill)
-            .push(widget::horizontal_space())
-            .push(
-                widget::button::text("Configure")
-                    .on_press(Message::OpenSettingsView)
-                    .padding([2, 8]),
-            )
-            .push(widget::horizontal_space())
-    };
-
-    let content_list = widget::column()
-        .width(Length::Fill)
-        .padding(0)
-        .spacing(10)
-        .align_x(Alignment::Center)
-        .push(phase_row)
-        .push(timer_text)
-        .push(controls)
-        .push(settings_row);
-
-    core.applet
-        .popup_container(content_list.padding(10).width(Length::Fixed(320.0)))
-        .into()
-}
-
-fn format_timer(total_seconds: u64) -> String {
-    let minutes = total_seconds / 60;
-    let seconds = total_seconds % 60;
-    format!("{:02}:{:02}", minutes, seconds)
-}
-
-fn view_settings<'a>(
-    core: &'a cosmic::Core,
-    _current_view: PopupView,
-    _id: Id,
-    config: &'a Config,
-) -> Element<'a, Message> {
-    let header = widget::row().padding(2).spacing(0).push(
-        core.applet
-            .icon_button("go-previous-symbolic")
-            .on_press(Message::BackToMainView),
-    );
-
-    let work_time_row = widget::row()
-        .padding(0)
-        .spacing(0)
-        .push(widget::spin_button(
-            format!("{}", config.work_time),
-            config.work_time,
-            5,
-            5,
-            180,
-            |v| Message::Settings(SettingsMessage::SetWorkTime(v as u64)),
-        ));
-    let short_break_time_row = widget::row()
-        .padding(0)
-        .spacing(0)
-        .push(widget::spin_button(
-            format!("{}", config.short_break_time),
-            config.short_break_time,
-            1,
-            1,
-            60,
-            |v| Message::Settings(SettingsMessage::SetShortBreakTime(v as u64)),
-        ));
-    let long_break_time_row = widget::row()
-        .padding(0)
-        .spacing(0)
-        .push(widget::spin_button(
-            format!("{}", config.long_break_time),
-            config.long_break_time,
-            1,
-            1,
-            180,
-            |v| Message::Settings(SettingsMessage::SetLongBreakTime(v as u64)),
-        ));
-    let long_break_interval_row = widget::row()
-        .padding(0)
-        .spacing(0)
-        .push(widget::spin_button(
-            format!("{}", config.long_break_interval),
-            config.long_break_interval,
-            1,
-            1,
-            10,
-            |v| Message::Settings(SettingsMessage::SetLongBreakInterval(v as u64)),
-        ));
-
-    let content_list = widget::column()
-        .width(Length::Fill)
-        .padding(0)
-        .spacing(10)
-        .push(header)
-        .push(
-            widget::column()
-                .width(Length::Fill)
-                .align_x(Alignment::Center)
-                .spacing(16)
-                .push(widget::text("Work time (minutes)").size(15))
-                .push(work_time_row)
-                .push(widget::text("Short break time (minutes)").size(15))
-                .push(short_break_time_row)
-                .push(widget::text("Long break time (minutes)").size(15))
-                .push(long_break_time_row)
-                .push(widget::text("Long break interval").size(15))
-                .push(long_break_interval_row)
-                .push(
-                    widget::column()
-                        .spacing(12)
-                        .push(
-                            widget::toggler(config.auto_start_work)
-                                .spacing(10)
-                                .label("Auto start work timer")
-                                .size(15)
-                                .on_toggle(|v| {
-                                    Message::Settings(SettingsMessage::SetAutoStartWork(v))
-                                }),
-                        )
-                        .push(
-                            widget::toggler(config.auto_start_break)
-                                .spacing(10)
-                                .label("Auto start break timer")
-                                .size(15)
-                                .on_toggle(|v| {
-                                    Message::Settings(SettingsMessage::SetAutoStartBreak(v))
-                                }),
-                        ),
-                )
-                .push(widget::row().spacing(10).push(core.applet.text_button(
-                    "Reset to default settings",
-                    Message::Settings(SettingsMessage::ResetToDefault),
-                ))),
-        );
-
-    core.applet.popup_container(content_list.padding(10)).into()
 }
