@@ -1,72 +1,91 @@
 # Cosmic Pomodoro
 
-Minimal Pomodoro applet for COSMIC desktop.
+A minimal, distraction-free Pomodoro applet for COSMIC desktop.
+
+## Why this applet
+
+Cosmic Pomodoro is intentionally simple: fast controls, clear timer state, and no unnecessary UI noise.
+It focuses on helping you stay in rhythm (work -> break -> work) without getting in your way.
 
 ## Features
 
-- Work / break timer flow with configurable durations
-- Phase switch controls (`Start`, `Pause`, `Forward`, `Restart`)
-- Session indicators and cycle counter in the popup UI
-- Panel icon with compact progress bar while a session is running
-- Desktop notifications + sound on phase transition
+- Minimal popup UI with clear **Work** / **Break** session states
+- Quick session controls: **Start**, **Pause**, **Forward**, **Restart**
+- Configurable durations and long-break interval
+- Lightweight panel indicator with progress feedback
+- Desktop notifications with sound cues on session transitions
+- Flatpak packaging ready for COSMIC distribution workflows
+
+## Screenshots
+
+| Theme | Preview |
+|---|---|
+| Pop!_OS Classic | ![PopOsClassic](img/PopOsClassic.png) |
+| Catppuccin | ![Catppuccin](img/Catpuccin.png) |
+| Tokyo Night | ![TokyoNight](img/TokyoNight.png) |
+| Gruvbox Dark | ![GruvboxDark](img/GruvboxDark.png) |
+| Gruvbox Light | ![GruvboxLight](img/GruvboxLight.png) |
+| Mono Dark | ![MonoDark](img/MonoDark.png) |
+| Settings | ![Config](img/Config.png) |
 
 ## Requirements
 
-- Rust toolchain (`rustup`, `cargo`)
-- `just` command runner
-- COSMIC desktop session (for applet integration)
-- Linux audio backend (`paplay` or `aplay`) for notification sound
+- Rust (`cargo`)
+- [`just`](https://github.com/casey/just)
+- `flatpak` + `org.flatpak.Builder`
+- COSMIC session for full applet integration testing
 
-## Quick Start
+## Local development
 
 ```sh
 just run
 ```
 
-Useful commands:
+## Flatpak build (local)
 
-- `just` or `just build-release` – build release binary
-- `just run` – run locally from source tree
-- `just install` – install binary + desktop metadata + icons + sound
-- `just uninstall` – remove installed files
-- `just check` – run clippy
-- `just flatpak-cargo-sources` – regenerate Flatpak cargo source list
-- `just flatpak-builder` – local Flatpak build + install
-- `just flatpak-bundle` – generate `io.github.petar030.cosmic-pomodoro-master.flatpak`
-
-## Install (system)
+This project is prepared for **COSMIC Flatpak ecosystem** usage (not Flathub-specific metadata/process).
 
 ```sh
-just build-release
-sudo just install
+# 1) Regenerate cargo sources used by manifest
+just flatpak-cargo-sources
+
+# 2) Build + install Flatpak locally
+just flatpak-builder
+
+# 3) Create distributable .flatpak bundle
+just flatpak-bundle
 ```
 
-After install, restart panel/session if icon cache is stale.
+Generated bundle:
 
-## Localization
+```text
+io.github.petar030.cosmic-pomodoro-master.flatpak
+```
 
-Translations use Fluent. Files are under [i18n](i18n). You can copy [i18n/en](i18n/en) and create a new locale directory.
-
-## Packaging
-
-For distro/offline builds:
+## Test installed Flatpak
 
 ```sh
-just vendor
-just build-vendored
-just rootdir=debian/cosmic-pomodoro prefix=/usr install
+flatpak run io.github.petar030.cosmic-pomodoro
 ```
 
-## Publishing Checklist
+## GitHub Release artifact
 
-Before tagging a release:
+Latest release (with `.flatpak` asset):
 
-- Update version in [Cargo.toml](Cargo.toml)
-- Ensure [resources/app.desktop](resources/app.desktop) metadata is final
-- Ensure [resources/app.metainfo.xml](resources/app.metainfo.xml) points to your real repo/icon URLs
-- Run `cargo check` and `just check`
-- Test both `just run` and installed mode (`just install`)
+- Release page: https://github.com/petar030/cosmic-pomodoro/releases/tag/v0.1.0-flatpak-20260308
+- Direct bundle: https://github.com/petar030/cosmic-pomodoro/releases/download/v0.1.0-flatpak-20260308/io.github.petar030.cosmic-pomodoro-master.flatpak
+
+## Preparing submission for `pop-os/cosmic-flatpak`
+
+When publishing to COSMIC Flatpak repository:
+
+1. Ensure manifest file is up to date: `io.github.petar030.cosmic-pomodoro.json`
+2. Ensure `cargo-sources.json` is regenerated from current `Cargo.lock`
+3. Ensure release/tag exists with downloadable source/artifacts
+4. Open PR against `https://github.com/pop-os/cosmic-flatpak` with updated app manifest/source references
+
+> Note: this README and manifest are intentionally tailored for COSMIC Flatpak flow, not Flathub packaging policy.
 
 ## Repository
 
-Project repository: https://github.com/petar030/cosmic-pomodoro
+https://github.com/petar030/cosmic-pomodoro
