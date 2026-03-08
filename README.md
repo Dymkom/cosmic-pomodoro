@@ -30,18 +30,17 @@ Cosmic Pomodoro is designed to feel perfectly at home inside the **COSMIC deskto
 - **Lightweight panel indicator** — compact progress icon showing session progress
 - **Desktop notifications with sound cues** — sound is always played on session transitions
 
-
 ## Screenshots
 
 | Theme | Preview |
 |---|---|
-| Pop!_OS Classic | img/PopOsClassic.png |
-| Catppuccin | img/Catpuccin.png |
-| Tokyo Night | img/TokyoNight.png |
-| Gruvbox Dark | img/GruvboxDark.png |
-| Gruvbox Light | img/GruvboxLight.png |
-| Mono Dark | img/MonoDark.png |
-| Settings | img/Config.png |
+| Pop!_OS Classic | ![PopOsClassic](img/PopOsClassic.png) |
+| Catppuccin | ![Catppuccin](img/Catpuccin.png) |
+| Tokyo Night | ![TokyoNight](img/TokyoNight.png) |
+| Gruvbox Dark | ![GruvboxDark](img/GruvboxDark.png) |
+| Gruvbox Light | ![GruvboxLight](img/GruvboxLight.png) |
+| Mono Dark | ![MonoDark](img/MonoDark.png) |
+| Settings | ![Config](img/Config.png) |
 
 
 ## Requirements
