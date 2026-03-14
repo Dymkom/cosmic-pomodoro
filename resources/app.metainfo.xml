@@ -1,25 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component type="desktop-application">
+<component type="addon">
   <id>io.github.petar030.cosmic-pomodoro</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>MPL-2.0</project_license>
+  <project_group>COSMIC</project_group>
+  <developer_name>Petar Rančić</developer_name>
   <name>Cosmic Pomodoro</name>
-  <summary>Simple Pomodoro applet for Cosmic Desktop</summary>
+  <summary>Simple Pomodoro applet for COSMIC Desktop</summary>
   <description>
     <p>
-      Cosmic Pomodoro is a focused work timer applet for COSMIC Desktop with
-      configurable work, short break, and long break intervals.
+      Cosmic Pomodoro is a minimal and distraction-free Pomodoro applet for
+      the COSMIC desktop.
     </p>
     <p>
-      It provides panel integration, localized UI, and desktop notifications
-      with optional sound alerts for seamless pomodoro cycles.
+      It provides configurable work, short break, and long break intervals,
+      panel integration, localized UI, and subtle notifications.
     </p>
   </description>
   <icon type="stock">io.github.petar030.cosmic-pomodoro</icon>
+  <url type="homepage">https://github.com/petar030/cosmic-pomodoro</url>
+  <url type="bugtracker">https://github.com/petar030/cosmic-pomodoro/issues</url>
+  <url type="contribute">https://github.com/petar030/cosmic-pomodoro</url>
+  <url type="translate">https://github.com/petar030/cosmic-pomodoro/tree/master/i18n</url>
   <url type="vcs-browser">https://github.com/petar030/cosmic-pomodoro</url>
   <launchable type="desktop-id">io.github.petar030.cosmic-pomodoro.desktop</launchable>
+  <extends>com.system76.CosmicApplet</extends>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/petar030/cosmic-pomodoro/master/img/Main.png</image>
+      <caption>Main applet window with timer controls.</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/petar030/cosmic-pomodoro/master/img/PopOsClassic.png</image>
+      <caption>Cosmic Pomodoro applet in Pop!_OS Classic theme.</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/petar030/cosmic-pomodoro/master/img/Catpuccin.png</image>
+      <caption>Cosmic Pomodoro applet in Catppuccin theme.</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/petar030/cosmic-pomodoro/master/img/TokyoNight.png</image>
+      <caption>Cosmic Pomodoro applet in Tokyo Night theme.</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/petar030/cosmic-pomodoro/master/img/GruvboxDark.png</image>
+      <caption>Cosmic Pomodoro applet in Gruvbox Dark theme.</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/petar030/cosmic-pomodoro/master/img/GruvboxLight.png</image>
+      <caption>Cosmic Pomodoro applet in Gruvbox Light theme.</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/petar030/cosmic-pomodoro/master/img/MonoDark.png</image>
+      <caption>Cosmic Pomodoro applet in Mono Dark theme.</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/petar030/cosmic-pomodoro/master/img/Config.png</image>
+      <caption>Settings view with configurable Pomodoro intervals.</caption>
+    </screenshot>
+  </screenshots>
   <provides>
-    <id>io.github.petar030.cosmic-pomodoro</id>
+    <id>com.system76.CosmicApplet</id>
     <binaries>
       <binary>cosmic-pomodoro</binary>
     </binaries>
@@ -34,9 +75,21 @@
   </supports>
   <categories>
     <category>COSMIC</category>
+    <category>Utility</category>
   </categories>
   <keywords>
     <keyword>COSMIC</keyword>
+    <keyword>Pomodoro</keyword>
+    <keyword>Timer</keyword>
+    <keyword>Productivity</keyword>
   </keywords>
+  <releases>
+    <release version="0.1.0" date="2026-03-08">
+      <url type="details">https://github.com/petar030/cosmic-pomodoro/releases/tag/v0.1.0-flatpak-20260308</url>
+      <description>
+        <p>Initial public Flatpak release of Cosmic Pomodoro.</p>
+      </description>
+    </release>
+  </releases>
   <content_rating type="oars-1.1" />
 </component>
