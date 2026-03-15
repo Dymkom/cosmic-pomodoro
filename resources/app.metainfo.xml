@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component type="addon">
+<component type="desktop-application">
   <id>io.github.petar030.cosmic-pomodoro</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>MPL-2.0</project_license>
   <project_group>COSMIC</project_group>
-  <developer id="io.github.petar030">
-    <name>Petar Rančić</name>
-  </developer>
+  <developer_name>Petar Rančić</developer_name>
   <update_contact>petar030@users.noreply.github.com</update_contact>
   <name>Cosmic Pomodoro</name>
   <summary>Simple Pomodoro applet for COSMIC Desktop</summary>
@@ -27,7 +25,6 @@
   <url type="translate">https://github.com/petar030/cosmic-pomodoro/tree/master/i18n</url>
   <url type="vcs-browser">https://github.com/petar030/cosmic-pomodoro</url>
   <launchable type="desktop-id">io.github.petar030.cosmic-pomodoro.desktop</launchable>
-  <extends>com.system76.CosmicApplet</extends>
   <screenshots>
     <screenshot type="default">
       <image>https://raw.githubusercontent.com/petar030/cosmic-pomodoro/master/img/Main.png</image>
@@ -64,7 +61,9 @@
   </screenshots>
   <provides>
     <id>com.system76.CosmicApplet</id>
-    <binary>cosmic-pomodoro</binary>
+    <binaries>
+      <binary>cosmic-pomodoro</binary>
+    </binaries>
   </provides>
   <requires>
     <display_length compare="ge">360</display_length>
